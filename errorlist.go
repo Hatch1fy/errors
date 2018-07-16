@@ -1,5 +1,9 @@
 package errors
 
+import (
+	"encoding/json"
+)
+
 // ErrorList represents a list of errors
 type ErrorList struct {
 	errs []error
@@ -46,4 +50,22 @@ func (e *ErrorList) Error() (out string) {
 	}
 
 	return string(bs)
+}
+
+// MarshalJSON is a json encoding helper func
+func (e ErrorList) MarshalJSON() (bs []byte, err error) {
+	return json.Marshal(e.errs)
+}
+
+// UnmarshalJSON is a json decoding helper func
+func (e *ErrorList) UnmarshalJSON(bs []byte) (err error) {
+	var errs []string
+	if err = json.Unmarshal(bs, &errs); err != nil {
+		return
+	}
+
+	for _, errStr := range errs {
+		e.errs = append(e.errs, Error(errStr))
+	}
+	return
 }
