@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestErrorListMarshal(t *testing.T) {
+func TestErrorListJSON(t *testing.T) {
 	var (
 		ms  testMarshalStruct
 		err error
