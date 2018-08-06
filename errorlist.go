@@ -24,7 +24,12 @@ func (e *ErrorList) Push(err error) {
 		return
 	}
 
-	e.errs = append(e.errs, err)
+	switch v := err.(type) {
+	case *ErrorList:
+		e.errs = append(e.errs, v.errs...)
+	default:
+		e.errs = append(e.errs, err)
+	}
 }
 
 // Copy will copy a slice of errors to the error list
