@@ -59,7 +59,12 @@ func (e *ErrorList) Error() (out string) {
 
 // MarshalJSON is a json encoding helper func
 func (e ErrorList) MarshalJSON() (bs []byte, err error) {
-	return json.Marshal(e.errs)
+	errs := make([]string, 0, len(e.errs))
+	for _, err := range e.errs {
+		errs = append(errs, err.Error())
+	}
+
+	return json.Marshal(errs)
 }
 
 // UnmarshalJSON is a json decoding helper func
@@ -72,5 +77,6 @@ func (e *ErrorList) UnmarshalJSON(bs []byte) (err error) {
 	for _, errStr := range errs {
 		e.errs = append(e.errs, Error(errStr))
 	}
+
 	return
 }
