@@ -11,11 +11,14 @@ type ErrorList struct {
 
 // Err will return an error value if the ErrorList isn't empty
 func (e *ErrorList) Err() (err error) {
-	if len(e.errs) == 0 {
-		return
+	switch len(e.errs) {
+	case 0:
+		return nil
+	case 1:
+		return e.errs[0]
+	default:
+		return e
 	}
-
-	return e
 }
 
 // Push will push an error to the error list
@@ -37,6 +40,20 @@ func (e *ErrorList) Copy(errs []error) {
 	for _, err := range errs {
 		e.Push(err)
 	}
+}
+
+// ForEach will iterate through a list of errors
+func (e *ErrorList) ForEach(fn func(error) (end bool)) {
+	for _, err := range e.errs {
+		if fn(err) {
+			return
+		}
+	}
+}
+
+// Len will return the number of errors within the error list
+func (e *ErrorList) Len() (n int) {
+	return len(e.errs)
 }
 
 // Error will return the error string value
