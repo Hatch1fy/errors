@@ -6,6 +6,7 @@ import (
 	"testing"
 )
 
+//nolint:gochecknoglobals
 var initpc = caller()
 
 type X struct{}

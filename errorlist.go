@@ -1,6 +1,7 @@
 package errors
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -144,6 +145,8 @@ func (e *ErrorList) Len() (n int) {
 	return len(e.errs)
 }
 
+const errListSep = ",\n"
+
 // Error will return the error string value.
 func (e *ErrorList) Error() string {
 	switch len(e.errs) {
@@ -153,13 +156,14 @@ func (e *ErrorList) Error() string {
 		return e.errs[0].Error()
 	}
 
-	var bs []byte
+	// TODO(max): buf pool
+	buf := new(bytes.Buffer)
 	for _, err := range e.errs {
-		bs = append(bs, []byte(err.Error())...)
-		bs = append(bs, ',', '\n')
+		_, _ = buf.WriteString(err.Error())
+		_, _ = buf.WriteString(errListSep)
 	}
 
-	return string(bs)
+	return buf.String()
 }
 
 // MarshalJSON is a json encoding helper func.

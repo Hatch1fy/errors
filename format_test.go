@@ -327,15 +327,18 @@ func TestFormatGeneric(t *testing.T) {
 
 	wrappers := []wrapper{
 		{
+			//nolint:gocritic
 			func(err error) error { return WithMessage(err, "with-message") },
 			[]string{"with-message"},
 		}, {
+			//nolint:gocritic
 			func(err error) error { return WithStack(err) },
 			[]string{
 				"github.com/Hatch1fy/errors.(func·002|TestFormatGeneric.func2)\n\t" +
 					".+/github.com/Hatch1fy/errors/format_test.go:333",
 			},
 		}, {
+			//nolint:gocritic
 			func(err error) error { return Wrap(err, "wrap-error") },
 			[]string{
 				"wrap-error",
@@ -343,6 +346,7 @@ func TestFormatGeneric(t *testing.T) {
 					".+/github.com/Hatch1fy/errors/format_test.go:339",
 			},
 		}, {
+			//nolint:gocritic
 			func(err error) error { return Wrapf(err, "wrapf-error%d", 1) },
 			[]string{
 				"wrapf-error1",
@@ -406,6 +410,7 @@ func testFormatRegexp(t *testing.T, n int, arg interface{}, format, want string)
 	}
 }
 
+//nolint:gochecknoglobals
 var stackLineR = regexp.MustCompile(`\.`)
 
 // parseBlocks parses input into a slice, where:
@@ -478,7 +483,14 @@ func parseBlocks(input string, detectStackboundaries bool) ([]string, error) {
 	return blocks, nil
 }
 
-func testFormatCompleteCompare(t *testing.T, n int, arg interface{}, format string, want []string, detectStackBoundaries bool) {
+func testFormatCompleteCompare(
+	t *testing.T,
+	n int,
+	arg interface{},
+	format string,
+	want []string,
+	detectStackBoundaries bool,
+) {
 	gotStr := fmt.Sprintf(format, arg)
 
 	got, err := parseBlocks(gotStr, detectStackBoundaries)
@@ -487,7 +499,8 @@ func testFormatCompleteCompare(t *testing.T, n int, arg interface{}, format stri
 	}
 
 	if len(got) != len(want) {
-		t.Fatalf("test %d: fmt.Sprintf(%s, err) -> wrong number of blocks: got(%d) want(%d)\n got: %s\nwant: %s\ngotStr: %q",
+		t.Fatalf(
+			"test %d: fmt.Sprintf(%s, err) -> wrong number of blocks: got(%d) want(%d)\n got: %s\nwant: %s\ngotStr: %q",
 			n+1, format, len(got), len(want), prettyBlocks(got), prettyBlocks(want), gotStr)
 	}
 
@@ -499,14 +512,17 @@ func testFormatCompleteCompare(t *testing.T, n int, arg interface{}, format stri
 				t.Fatal(err)
 			}
 			if !match {
-				t.Fatalf("test %d: block %d: fmt.Sprintf(%q, err):\ngot:\n%q\nwant:\n%q\nall-got:\n%s\nall-want:\n%s\n",
-					n+1, i+1, format, got[i], want[i], prettyBlocks(got), prettyBlocks(want))
+				t.Fatalf(
+					"test %d: block %d: fmt.Sprintf(%q, err):\ngot:\n%q\nwant:\n%q\nall-got:\n%s\nall-want:\n%s\n",
+					n+1, i+1, format, got[i], want[i], prettyBlocks(got), prettyBlocks(want),
+				)
 			}
-		} else {
+		} else if got[i] != want[i] {
 			// Match as message
-			if got[i] != want[i] {
-				t.Fatalf("test %d: fmt.Sprintf(%s, err) at block %d got != want:\n got: %q\nwant: %q", n+1, format, i+1, got[i], want[i])
-			}
+			t.Fatalf(
+				"test %d: fmt.Sprintf(%s, err) at block %d got != want:\n got: %q\nwant: %q",
+				n+1, format, i+1, got[i], want[i],
+			)
 		}
 	}
 }
@@ -517,7 +533,7 @@ type wrapper struct {
 }
 
 func prettyBlocks(blocks []string) string {
-	var out []string
+	out := make([]string, 0, len(blocks))
 
 	for _, b := range blocks {
 		out = append(out, fmt.Sprintf("%v", b))
@@ -526,7 +542,13 @@ func prettyBlocks(blocks []string) string {
 	return "   " + strings.Join(out, "\n   ")
 }
 
-func testGenericRecursive(t *testing.T, beforeErr error, beforeWant []string, list []wrapper, maxDepth int) {
+func testGenericRecursive(
+	t *testing.T,
+	beforeErr error,
+	beforeWant []string,
+	list []wrapper,
+	maxDepth int,
+) {
 	if len(beforeWant) == 0 {
 		panic("beforeWant must not be empty")
 	}
@@ -547,8 +569,12 @@ func testGenericRecursive(t *testing.T, beforeErr error, beforeWant []string, li
 
 		// Merge two stacks behind each other.
 		if strings.ContainsAny(beforeWant[last], "\n") && strings.ContainsAny(w.want[0], "\n") {
-			want = append(beforeWant[:last], append([]string{beforeWant[last] + "((?s).*)" + w.want[0]}, w.want[1:]...)...)
+			//nolint:gocritic
+			want = append(
+				beforeWant[:last],
+				append([]string{beforeWant[last] + "((?s).*)" + w.want[0]}, w.want[1:]...)...)
 		} else {
+			//nolint:gocritic
 			want = append(beforeWant, w.want...)
 		}
 

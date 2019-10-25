@@ -25,6 +25,8 @@ func yesErrors(at, depth int) error {
 
 // GlobalE is an exported global to store the result of benchmark results,
 // preventing the compiler from optimising the benchmark functions away.
+//
+// nolint:gochecknoglobals
 var GlobalE interface{}
 
 func BenchmarkErrors(b *testing.B) {
@@ -49,11 +51,13 @@ func BenchmarkErrors(b *testing.B) {
 		b.Run(name, func(b *testing.B) {
 			var err error
 			f := yesErrors
+			//nolint:scopelint
 			if r.std {
 				f = noErrors
 			}
 			b.ReportAllocs()
 			for i := 0; i < b.N; i++ {
+				//nolint:scopelint
 				err = f(0, r.stack)
 			}
 			b.StopTimer()
@@ -83,10 +87,12 @@ func BenchmarkStackFormatting(b *testing.B) {
 	for _, r := range runs {
 		name := fmt.Sprintf("%s-stack-%d", r.format, r.stack)
 		b.Run(name, func(b *testing.B) {
+			//nolint:scopelint
 			err := yesErrors(0, r.stack)
 			b.ReportAllocs()
 			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
+				//nolint:scopelint
 				stackStr = fmt.Sprintf(r.format, err)
 			}
 			b.StopTimer()
@@ -96,11 +102,13 @@ func BenchmarkStackFormatting(b *testing.B) {
 	for _, r := range runs {
 		name := fmt.Sprintf("%s-stacktrace-%d", r.format, r.stack)
 		b.Run(name, func(b *testing.B) {
+			//nolint:scopelint
 			err := yesErrors(0, r.stack)
 			st := err.(*fundamental).stack.StackTrace()
 			b.ReportAllocs()
 			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
+				//nolint:scopelint
 				stackStr = fmt.Sprintf(r.format, st)
 			}
 			b.StopTimer()

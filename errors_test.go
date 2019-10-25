@@ -121,8 +121,16 @@ func TestWrapf(t *testing.T) {
 		want    string
 	}{
 		{io.EOF, "read error", "read error: EOF"},
-		{Wrapf(io.EOF, "read error without format specifiers"), "client error", "client error: read error without format specifiers: EOF"},
-		{Wrapf(io.EOF, "read error with %d format specifier", 1), "client error", "client error: read error with 1 format specifier: EOF"},
+		{
+			Wrapf(io.EOF, "read error without format specifiers"),
+			"client error",
+			"client error: read error without format specifiers: EOF",
+		},
+		{
+			Wrapf(io.EOF, "read error with %d format specifier", 1),
+			"client error",
+			"client error: read error with 1 format specifier: EOF",
+		},
 	}
 
 	for _, tt := range tests {
@@ -138,8 +146,14 @@ func TestErrorf(t *testing.T) {
 		err  error
 		want string
 	}{
-		{Errorf("read error without format specifiers"), "read error without format specifiers"},
-		{Errorf("read error with %d format specifier", 1), "read error with 1 format specifier"},
+		{
+			Errorf("read error without format specifiers"),
+			"read error without format specifiers",
+		},
+		{
+			Errorf("read error with %d format specifier", 1),
+			"read error with 1 format specifier",
+		},
 	}
 
 	for _, tt := range tests {
@@ -213,8 +227,16 @@ func TestWithMessagef(t *testing.T) {
 		want    string
 	}{
 		{io.EOF, "read error", "read error: EOF"},
-		{WithMessagef(io.EOF, "read error without format specifier"), "client error", "client error: read error without format specifier: EOF"},
-		{WithMessagef(io.EOF, "read error with %d format specifier", 1), "client error", "client error: read error with 1 format specifier: EOF"},
+		{
+			WithMessagef(io.EOF, "read error without format specifier"),
+			"client error",
+			"client error: read error without format specifier: EOF",
+		},
+		{
+			WithMessagef(io.EOF, "read error with %d format specifier", 1),
+			"client error",
+			"client error: read error with 1 format specifier: EOF",
+		},
 	}
 
 	for _, tt := range tests {
