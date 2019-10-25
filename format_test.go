@@ -335,7 +335,7 @@ func TestFormatGeneric(t *testing.T) {
 			func(err error) error { return WithStack(err) },
 			[]string{
 				"github.com/Hatch1fy/errors.(func·002|TestFormatGeneric.func2)\n\t" +
-					".+/github.com/Hatch1fy/errors/format_test.go:333",
+					".+/github.com/Hatch1fy/errors/format_test.go:335",
 			},
 		}, {
 			//nolint:gocritic
@@ -343,7 +343,7 @@ func TestFormatGeneric(t *testing.T) {
 			[]string{
 				"wrap-error",
 				"github.com/Hatch1fy/errors.(func·003|TestFormatGeneric.func3)\n\t" +
-					".+/github.com/Hatch1fy/errors/format_test.go:339",
+					".+/github.com/Hatch1fy/errors/format_test.go:342",
 			},
 		}, {
 			//nolint:gocritic
@@ -351,7 +351,7 @@ func TestFormatGeneric(t *testing.T) {
 			[]string{
 				"wrapf-error1",
 				"github.com/Hatch1fy/errors.(func·004|TestFormatGeneric.func4)\n\t" +
-					".+/github.com/Hatch1fy/errors/format_test.go:346",
+					".+/github.com/Hatch1fy/errors/format_test.go:350",
 			},
 		},
 	}
@@ -378,9 +378,9 @@ func TestFormatWrappedNew(t *testing.T) {
 		"%+v",
 		"error\n" +
 			"github.com/Hatch1fy/errors.wrappedNew\n" +
-			"\t.+/github.com/Hatch1fy/errors/format_test.go:364\n" +
+			"\t.+/github.com/Hatch1fy/errors/format_test.go:368\n" +
 			"github.com/Hatch1fy/errors.TestFormatWrappedNew\n" +
-			"\t.+/github.com/Hatch1fy/errors/format_test.go:373",
+			"\t.+/github.com/Hatch1fy/errors/format_test.go:377",
 	}}
 
 	for i, tt := range tests {

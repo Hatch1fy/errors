@@ -46,7 +46,7 @@ func TestFrameFormat(t *testing.T) {
 	}, {
 		initpc,
 		"%d",
-		"9",
+		"10",
 	}, {
 		0,
 		"%d",
@@ -76,12 +76,12 @@ func TestFrameFormat(t *testing.T) {
 	}, {
 		initpc,
 		"%v",
-		"stack_test.go:9",
+		"stack_test.go:10",
 	}, {
 		initpc,
 		"%+v",
 		"github.com/Hatch1fy/errors.init\n" +
-			"\t.+/github.com/Hatch1fy/errors/stack_test.go:9",
+			"\t.+/github.com/Hatch1fy/errors/stack_test.go:10",
 	}, {
 		0,
 		"%v",
@@ -121,24 +121,24 @@ func TestStackTrace(t *testing.T) {
 	}{{
 		New("ooh"), []string{
 			"github.com/Hatch1fy/errors.TestStackTrace\n" +
-				"\t.+/github.com/Hatch1fy/errors/stack_test.go:121",
+				"\t.+/github.com/Hatch1fy/errors/stack_test.go:122",
 		},
 	}, {
 		Wrap(New("ooh"), "ahh"), []string{
 			"github.com/Hatch1fy/errors.TestStackTrace\n" +
-				"\t.+/github.com/Hatch1fy/errors/stack_test.go:126", // this is the stack of Wrap, not New
+				"\t.+/github.com/Hatch1fy/errors/stack_test.go:127", // this is the stack of Wrap, not New
 		},
 	}, {
 		Cause(Wrap(New("ooh"), "ahh")), []string{
 			"github.com/Hatch1fy/errors.TestStackTrace\n" +
-				"\t.+/github.com/Hatch1fy/errors/stack_test.go:131", // this is the stack of New
+				"\t.+/github.com/Hatch1fy/errors/stack_test.go:132", // this is the stack of New
 		},
 	}, {
 		func() error { return New("ooh") }(), []string{
 			`github.com/Hatch1fy/errors.TestStackTrace.func1` +
-				"\n\t.+/github.com/Hatch1fy/errors/stack_test.go:136", // this is the stack of New
+				"\n\t.+/github.com/Hatch1fy/errors/stack_test.go:137", // this is the stack of New
 			"github.com/Hatch1fy/errors.TestStackTrace\n" +
-				"\t.+/github.com/Hatch1fy/errors/stack_test.go:136", // this is the stack of New's caller
+				"\t.+/github.com/Hatch1fy/errors/stack_test.go:137", // this is the stack of New's caller
 		},
 	}, {
 		Cause(func() error {
@@ -147,11 +147,11 @@ func TestStackTrace(t *testing.T) {
 			}()
 		}()), []string{
 			`github.com/Hatch1fy/errors.TestStackTrace.func2.1` +
-				"\n\t.+/github.com/Hatch1fy/errors/stack_test.go:145", // this is the stack of Errorf
+				"\n\t.+/github.com/Hatch1fy/errors/stack_test.go:146", // this is the stack of Errorf
 			`github.com/Hatch1fy/errors.TestStackTrace.func2` +
-				"\n\t.+/github.com/Hatch1fy/errors/stack_test.go:146", // this is the stack of Errorf's caller
+				"\n\t.+/github.com/Hatch1fy/errors/stack_test.go:147", // this is the stack of Errorf's caller
 			"github.com/Hatch1fy/errors.TestStackTrace\n" +
-				"\t.+/github.com/Hatch1fy/errors/stack_test.go:147", // this is the stack of Errorf's caller's caller
+				"\t.+/github.com/Hatch1fy/errors/stack_test.go:148", // this is the stack of Errorf's caller's caller
 		},
 	}}
 	for i, tt := range tests {
@@ -221,19 +221,19 @@ func TestStackTraceFormat(t *testing.T) {
 	}, {
 		stackTrace()[:2],
 		"%v",
-		`\[stack_test.go:174 stack_test.go:221\]`,
+		`\[stack_test.go:175 stack_test.go:222\]`,
 	}, {
 		stackTrace()[:2],
 		"%+v",
 		"\n" +
 			"github.com/Hatch1fy/errors.stackTrace\n" +
-			"\t.+/github.com/Hatch1fy/errors/stack_test.go:174\n" +
+			"\t.+/github.com/Hatch1fy/errors/stack_test.go:175\n" +
 			"github.com/Hatch1fy/errors.TestStackTraceFormat\n" +
-			"\t.+/github.com/Hatch1fy/errors/stack_test.go:225",
+			"\t.+/github.com/Hatch1fy/errors/stack_test.go:226",
 	}, {
 		stackTrace()[:2],
 		"%#v",
-		`\[\]errors.Frame{stack_test.go:174, stack_test.go:233}`,
+		`\[\]errors.Frame{stack_test.go:175, stack_test.go:234}`,
 	}}
 
 	for i, tt := range tests {
