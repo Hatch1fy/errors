@@ -34,12 +34,13 @@
 // to reverse the operation of errors.Wrap to retrieve the original error
 // for inspection. Any error value which implements this interface
 //
-//     type ErrorCause interface {
+//     type ErrorWithCause interface {
 //             Cause() error
+//			   Error() string
 //     }
 //
 // can be inspected by errors.Cause. errors.Cause will recursively retrieve
-// the topmost error that does not implement causer, which is assumed to be
+// the topmost error that does not implement ErrorWithCause, which is assumed to be
 // the original cause. For example:
 //
 //     switch err := errors.Cause(err).(type) {
@@ -113,7 +114,7 @@ func Errorf(format string, args ...interface{}) error {
 	}
 }
 
-// fundamental is an error that has a message and a stack, but no caller.
+// fundamental is an error that has a message and a stack, but no cause.
 type fundamental struct {
 	msg string
 	*stack
@@ -153,6 +154,9 @@ type withStack struct {
 	error
 	*stack
 }
+
+// Check that *withStack implements ErrorWithCauser at compile time.
+var _ ErrorWithCause = &withStack{}
 
 func (w *withStack) Cause() error { return w.error }
 
@@ -235,6 +239,9 @@ type withMessage struct {
 	msg   string
 }
 
+// Check that *withMessage implements ErrorWithCauser at compile time.
+var _ ErrorWithCause = &withMessage{}
+
 func (w *withMessage) Error() string { return w.msg + ": " + w.cause.Error() }
 func (w *withMessage) Cause() error  { return w.cause }
 
@@ -252,24 +259,27 @@ func (w *withMessage) Format(s fmt.State, verb rune) {
 	}
 }
 
+// ErrorWithCause interface defines a minimal interface for getting a wrapped error's original cause.
+type ErrorWithCause interface {
+	Cause() error
+	Error() string
+}
+
 // Cause returns the underlying cause of the error, if possible.
 // An error value has a cause if it implements the following
 // interface:
 //
-//     type Causer interface {
+//     type ErrorWithCause interface {
 //            Cause() error
+//			  Error() string
 //     }
 //
 // If the error does not implement Cause, the original error will
 // be returned. If the error is nil, nil will be returned without further
 // investigation.
 func Cause(err error) error {
-	type causer interface {
-		Cause() error
-	}
-
 	for err != nil {
-		cause, ok := err.(causer)
+		cause, ok := err.(ErrorWithCause)
 		if !ok {
 			break
 		}
