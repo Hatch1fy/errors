@@ -34,7 +34,7 @@
 // to reverse the operation of errors.Wrap to retrieve the original error
 // for inspection. Any error value which implements this interface
 //
-//     type causer interface {
+//     type ErrorCause interface {
 //             Cause() error
 //     }
 //
@@ -48,9 +48,6 @@
 //     default:
 //             // unknown error
 //     }
-//
-// Although the causer interface is not exported by this package, it is
-// considered a part of its stable public interface.
 //
 // Formatted printing of errors
 //
@@ -259,7 +256,7 @@ func (w *withMessage) Format(s fmt.State, verb rune) {
 // An error value has a cause if it implements the following
 // interface:
 //
-//     type causer interface {
+//     type Causer interface {
 //            Cause() error
 //     }
 //
