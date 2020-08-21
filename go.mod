@@ -1,3 +1,3 @@
-module github.com/Hatch1fy/errors
+module github.com/hatchify/errors
 
 go 1.14
